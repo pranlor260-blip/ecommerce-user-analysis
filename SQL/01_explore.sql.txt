@@ -1,0 +1,44 @@
+-- 01_explore.sql  【数据探查SQL】
+
+-- ① 每张表行数
+SELECT 'users' AS 表名, COUNT(*) AS 行数 FROM users
+UNION ALL
+SELECT 'products', COUNT(*) FROM products
+UNION ALL
+SELECT 'orders', COUNT(*) FROM orders
+UNION ALL
+SELECT 'daily_targets', COUNT(*) FROM daily_targets;
+
+-- ② 渠道
+SELECT DISTINCT channel FROM orders;
+
+-- ③ 城市
+SELECT DISTINCT city FROM users ORDER BY city;
+
+-- ④ 订单状态
+SELECT DISTINCT order_status FROM orders;
+
+-- ⑤ 日期范围
+SELECT MIN(order_date), MAX(order_date) FROM orders;
+
+-- ⑥ 缺失值
+SELECT 
+  SUM(CASE WHEN user_id IS NULL THEN 1 ELSE 0 END) AS user_id空,
+  SUM(CASE WHEN product_id IS NULL THEN 1 ELSE 0 END) AS product_id空,
+  SUM(CASE WHEN amount IS NULL THEN 1 ELSE 0 END) AS amount空,
+  SUM(CASE WHEN channel IS NULL THEN 1 ELSE 0 END) AS channel空
+FROM orders;
+
+-- ⑦ 状态分布
+SELECT order_status, COUNT(*) AS 数量
+FROM orders
+GROUP BY order_status;
+
+探查结果：
+channel: APP, 直播，小程序， PC, app， 小程序
+city: 上海, 上海市,乌鲁木齐，兰州，北京，南京，南昌，厦门，哈尔滨，大连，天津，广州，成都，成都市，昆明，杭州，武汉，沈阳，济南，深圳，福州，苏州，西安，贵阳，郑州，重庆，银川，长春，长沙，青岛 （共三十个）
+order_status: 已完成, 已取消, 已退款
+日期范围: 2025-01-01 00：00：00 ~ 2025-12-31 00：00：00
+缺失值: 0, 0, 0, 0
+状态分布: 已完成 6101, 已取消 363, 已退款 536  
+
